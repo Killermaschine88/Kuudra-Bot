@@ -33,8 +33,14 @@ function isAdmin(interaction) {
   return interaction.member.roles.cache.has("971668152914182164") || interaction.member.roles.cache.has("971668500584202280") ? true : false;
 }
 
+async function memberHandler(interaction) {
+  if(interaction.customId === "join_party") {
+    
+  }
+}
+
 async function partyLeaderHandler(interaction) {
-  if (!isPartyLeader(interaction) || !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
+  if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
   if (interaction.customId === "add_player") {
     //open modal to add user with (ign, hype(yes/no), term(yes/no))
   }
