@@ -1,15 +1,15 @@
 //General Stuff
 require("dotenv").config();
 const fs = require("fs");
-const { start } = require("./global/index")
-start()
+const { start } = require("./global/index");
+start();
 
 //Discord Stuff
 const Discord = require("discord.js");
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
 client.login(process.env.TOKEN);
 
-loadCommands(client)
+loadCommands(client);
 
 const eventFiles = fs.readdirSync(__dirname + "/discord/events").filter((file) => file.endsWith(".js"));
 
@@ -28,8 +28,7 @@ process.on("unhandledRejection", (error) => console.log(error));
 
 //Server
 const { startAPI } = require("./api/index.js");
-//startAPI(); Useless as of now
-
+startAPI();
 
 //yea
 function loadCommands(client) {
