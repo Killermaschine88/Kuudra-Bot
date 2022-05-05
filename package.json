@@ -8,16 +8,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Killermaschine88/ChatTriggers.git"
+    "url": "git+https://github.com/Killermaschine88/Kuudra-Bot.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Killermaschine88/ChatTriggers/issues"
+    "url": "https://github.com/Killermaschine88/Kuudra-Bot/issues"
   },
-  "homepage": "https://github.com/Killermaschine88/ChatTriggers#readme",
+  "homepage": "https://github.com/Killermaschine88/Kuudra-Bot#readme",
   "dependencies": {
+    "colorette": "^2.0.16",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.1",
     "prettier": "^2.6.2"
   },
   "prettier": {
