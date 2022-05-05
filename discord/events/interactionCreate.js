@@ -1,4 +1,7 @@
-const { createParty, isPartyLeader, partyLeaderHandler, adminHandler } = require("../constants/functions/lfg");
+const { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, joinHandler, getPartyMembers } = require("../constants/functions/lfg");
+
+let joinCache = {}
+let createCache = {}
 
 module.exports = {
   name: "interactionCreate",
@@ -29,11 +32,29 @@ module.exports = {
     if (interaction.isButton()) {
       await interaction.deferUpdate();
       if (["T1", "T2", "T3", "T4", "T5"].includes(interaction.customId)) {
-        return await interaction.channel.send(createParty(interaction));
+        const msg = await interaction.channel.send(createParty(interaction));
+        return await msg.startThread({
+          name: `${interaction.user.tag}'s Party`
+        })
       } else if (["add_player", "kick_player", "run_started"].includes(interaction.customId)) {
         return await partyLeaderHandler(interaction);
       } else if(["disband_party"].includes(interaction.customId)) {
         return await adminHandler(interaction)
+      } else if(["join_party"].includes(interaction.customId)) {
+        if(!joinCache[interaction.user.id]) {
+          joinCache[interaction.user.id] = []
+        }
+        if(joinCache[interaction.user.id].includes(interaction.message.id)) {
+          return await interaction.followUp({content: "You already requested to join this party.", ephemeral: true})
+        }
+        joinCache[interaction.user.id].push(interaction.message.id)
+        const mems = getPartyMembers(interaction.message.embeds[0])
+        if(mems > 4) {
+          return await interaction.followUp({content: "This party is already full.", ephemeral: true})
+        }
+        return await memberHandler(interaction)
+      } else if(["allow", "deny"].includes(interaction.customId)) {
+        return await joinHandler(interaction)
       }
     }
   },
