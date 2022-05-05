@@ -20,6 +20,8 @@ function createParty(interaction) {
     ]),
   ];
 
+  //+1 to parties created
+
   return { embeds: [embed], components: rows };
 }
 
@@ -35,7 +37,7 @@ function isAdmin(interaction) {
 
 async function memberHandler(interaction) {
   if(interaction.customId === "join_party") {
-    
+    //ya know handle the good stuff here
   }
 }
 
@@ -51,6 +53,10 @@ async function partyLeaderHandler(interaction) {
     return await interaction.message.delete();
     //add +1 to counter in stats channel
   }
+  if (interaction.customId === "run_cancelled") {
+    return await interaction.message.delete();
+    //add +1 to counter in stats channel
+  }
 }
 
 async function adminHandler(interaction) {
@@ -62,4 +68,4 @@ async function adminHandler(interaction) {
   }
 }
 
-module.exports = { createParty, isPartyLeader, partyLeaderHandler };
+module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler };

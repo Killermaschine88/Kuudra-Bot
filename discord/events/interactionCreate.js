@@ -1,4 +1,4 @@
-const { createParty, isPartyLeader, partyLeaderHandler } = require("../constants/functions/lfg");
+const { createParty, isPartyLeader, partyLeaderHandler, adminHandler } = require("../constants/functions/lfg");
 
 module.exports = {
   name: "interactionCreate",
@@ -32,6 +32,8 @@ module.exports = {
         return await interaction.channel.send(createParty(interaction));
       } else if (["add_player", "kick_player", "run_started"].includes(interaction.customId)) {
         return await partyLeaderHandler(interaction);
+      } else if(["disband_party"].includes(interaction.customId)) {
+        return await adminHandler(interaction)
       }
     }
   },
