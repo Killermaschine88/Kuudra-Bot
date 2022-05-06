@@ -2,19 +2,19 @@ const Discord = require("discord.js");
 const { createButtonRow } = require("./general");
 
 function createParty(interaction) {
-  const hypemages = hasHyperion(interaction) ? "1" : "0"
-  const termarchers = hasTerminator(interaction) ? "1" : "0"
+  const hypemages = hasHyperion(interaction.member) ? "1" : "0";
+  const termarchers = hasTerminator(interaction.member) ? "1" : "0";
   const embed = new Discord.MessageEmbed().setTitle(`${interaction.user.tag}'s Party`).setDescription(`Party Members: 1/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`).addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`);
   const rows = [
     createButtonRow([
       { label: "Everyone", customId: ".", style: "PRIMARY", disabled: true },
       { label: "Join Party", customId: "join_party", style: "PRIMARY" },
+      { label: "Leave Party", customId: "leave_party", style: "PRIMARY" },
     ]),
     createButtonRow([
       { label: "Party Leader", customId: "..", style: "PRIMARY", disabled: true },
-     // { label: "Add Player", customId: "add_player", style: "PRIMARY" },
-    //  { label: "Kick Player", customId: "kick_player", style: "PRIMARY" },
       { label: "Run started", customId: "run_started", style: "PRIMARY" },
+      { label: "Run cancelled", customId: "run_cancelled", style: "PRIMARY" },
     ]),
     createButtonRow([
       { label: "Admin", customId: "...", style: "DANGER", disabled: true },
@@ -27,8 +27,8 @@ function createParty(interaction) {
   return { embeds: [embed], components: rows };
 }
 
-function isPartyLeader(interaction) {
-  const leader = interaction.message.embeds[0].title.split("'")[0];
+function isPartyLeader(interaction, msg) {
+  const leader = msg ? msg.embeds[0].title.split("'")[0] : interaction.message.embeds[0].title.split("'")[0];
 
   return leader === interaction.user.tag ? true : false;
 }
@@ -38,29 +38,60 @@ function isAdmin(interaction) {
 }
 
 async function memberHandler(interaction) {
-  if(interaction.customId === "join_party") {
-    if(isPartyLeader(interaction)) return await interaction.followUp({content: "You can not join your own party.", ephemeral: true})
-   const embed = interaction.message.embeds[0]
-    
-    const leader = embed.fields[0].value.split("-")[0]
-    const joinEmbed = new Discord.MessageEmbed().setDescription(`<@${interaction.user.id}> - ${interaction.user.id} wants to join the Party.\n\nHyperion: ${hasHyperion(interaction) ? "Yes" : "No"}\nTerminator ${hasTerminator(interaction) ? "Yes" : "No"}`)
-    
+  if (interaction.customId === "join_party") {
+    if (isPartyLeader(interaction)) return await interaction.followUp({ content: "You can not join your own party.", ephemeral: true });
+    const embed = interaction.message.embeds[0];
 
-    return await interaction.message.thread.send({ content: `${leader}`, embeds: [joinEmbed], components: [createButtonRow([{label:"Allow", customId: "allow", style: "SUCCESS"}, {label: "Deny", customId: "deny", style: "DANGER"}])]})
+    const leader = embed.fields[0].value.split("-")[0];
+    const joinEmbed = new Discord.MessageEmbed().setDescription(`<@${interaction.user.id}> - ${interaction.user.id} wants to join the Party.\n\nHyperion: ${hasHyperion(interaction.member) ? "Yes" : "No"}\nTerminator ${hasTerminator(interaction.member) ? "Yes" : "No"}`);
+
+    return await interaction.message.thread.send({
+      content: `${leader}`,
+      embeds: [joinEmbed],
+      components: [
+        createButtonRow([
+          { label: "Allow", customId: "allow", style: "SUCCESS" },
+          { label: "Deny", customId: "deny", style: "DANGER" },
+        ]),
+      ],
+    });
+  } else if (interaction.customId === "leave_party") {
+    if (!inParty(interaction)) return await interaction.followUp({ content: "You are not a member of this party.", ephemeral: true });
+
+    if (isPartyLeader(interaction)) return await interaction.followUp({ content: "You can not leave your own party.", ephemeral: true });
+
+    const embed = interaction.message.embeds[0];
+    const members = embed.fields[0].value.split("\n");
+    let str = "";
+    for (const member of members) {
+      const id = `${member}`.split("-")[0].trim().replace("<", "").replace("@", "").replace(">", "");
+      if (id !== interaction.user.id) {
+        str += `${member}\n`;
+      }
+    }
+
+    joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1)
+
+    const split = embed.description.split(":");
+    let hypemages = Number(split[2].charAt(1));
+    if (hasHyperion(interaction.member)) {
+      hypemages--;
+    }
+    let termarchers = Number(split[3].charAt(1));
+    if (hasTerminator(interaction.member)) {
+      termarchers--;
+    }
+    embed.setDescription(`Party Members: ${getPartyMembers(interaction.message.embeds[0])-2}/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`);
+    embed.fields[0].value = str
+    return await interaction.message.edit({ embeds: [embed] });
   }
 }
 
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
-  if (interaction.customId === "add_player") {
-    //open modal to add user with (ign, hype(yes/no), term(yes/no))
-  }
-  if (interaction.customId === "kick_player") {
-    //open modal to remove user with (ign)
-  }
-  
-  if (["run_started","run_cancelled"].includes(interaction.customId)) {
-    await interaction.message.thread.delete()
+  if (["run_started", "run_cancelled"].includes(interaction.customId)) {
+    createdCache[interaction.user.tag] = false;
+    await interaction.message.thread.delete();
     return await interaction.message.delete();
     //add +1 to counter in stats channel
   }
@@ -69,73 +100,87 @@ async function partyLeaderHandler(interaction) {
 async function adminHandler(interaction) {
   if (!isAdmin(interaction)) return await interaction.followUp({ content: "You are not an admin in this server.", ephemeral: true });
 
-  if(interaction.customId === "disband_party") {
-    await interaction.message.thread.delete()
-    return await interaction.message.delete()
+  if (interaction.customId === "disband_party") {
+    createdCache[interaction.message.embeds[0].title.split("'")[0].trim()] = false;
+    await interaction.message.thread.delete();
+    return await interaction.message.delete();
     //add +1 to counter in stats channel
   }
 }
 
 async function joinHandler(interaction) {
-  if(interaction.customId === "allow") {
-    const msg = (await interaction.channel.fetchStarterMessage())
-    const embed = msg.embeds[0]
+  if (!isPartyLeader(interaction, await interaction.channel.fetchStarterMessage())) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
+  if (interaction.customId === "allow") {
+    const msg = await interaction.channel.fetchStarterMessage();
+    const embed = msg.embeds[0];
+
+    const split = embed.description.split(":");
+    const user = await interaction.guild.members.fetch(interaction.message.embeds[0].description.split("-")[0].trim().replace("<", "").replace("@", "").replace(">", ""));
+    let hypemages = Number(split[2].charAt(1));
+    if (hasHyperion(user)) {
+      hypemages++;
+    }
+    let termarchers = Number(split[3].charAt(1));
+    if (hasTerminator(user)) {
+      termarchers++;
+    }
     
-    const split = embed.description.split(":")
-    let hypemages = Number(split[2].charAt(1))
-    if(hasHyperion(interaction)) {
-      hypemages++
-    }
-    let termarchers = Number(split[3].charAt(1))
-    if(hasTerminator(interaction)) {
-      termarchers++
-    }
-    const user = await interaction.client.users.fetch(interaction.message.embeds[0].description.split("-")[0].trim().replace("<", "").replace("@", "").replace(">", ""))
-    await interaction.message.delete()
+    await interaction.message.delete();
 
-    const members = getPartyMembers(embed)
-    if(members > 4) {
-      return await interaction.channel.send("This Party is already full.")
+    const members = getPartyMembers(embed);
+    if (members > 4) {
+      return await interaction.channel.send("This Party is already full.");
     }
 
-    await interaction.channel.send(`<@${user.id}> your join request was accepted.`)
+    await interaction.channel.send(`<@${user.id}> your join request was accepted.`);
 
-    embed.fields[0].value += `\n<@${user.id}> - ${user.tag}`
-    
-    embed.setDescription(`Party Members: ${members}/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`)
+    embed.fields[0].value += `\n<@${user.id}> - ${user.tag}`;
 
-    if(members === 4) {
-      const mems = embed.fields[0].value.split("\n")
-      await interaction.channel.send(`${notifyPartyMembers(mems)}`)
+    embed.setDescription(`Party Members: ${members}/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`);
+
+    if (members === 4) {
+      const mems = embed.fields[0].value.split("\n");
+      await interaction.channel.send(`${notifyPartyMembers(mems)}`);
     }
 
-    return msg.edit({embeds: [embed]}) 
+    return msg.edit({ embeds: [embed] });
   } else {
-    const user = interaction.message.embeds[0].description.split("-")[0].trim()
-    await interaction.message.delete()
-    return await interaction.channel.send(`${user} your join request was denied.`)
+    const user = interaction.message.embeds[0].description.split("-")[0].trim();
+    await interaction.message.delete();
+    return await interaction.channel.send(`${user} your join request was denied.`);
   }
 }
 
-function hasHyperion(interaction) {
-  return interaction.member.roles.cache.has("971832680796815460") ? true : false
+function hasHyperion(member) {
+  return member.roles.cache.has("971832680796815460") ? true : false;
 }
 
-function hasTerminator(interaction) {
-  return interaction.member.roles.cache.has("971832711876583474") ? true : false
+function hasTerminator(member) {
+  return member.roles.cache.has("971832711876583474") ? true : false;
 }
 
 function getPartyMembers(embed) {
-  const members = embed.fields[0].value.split("\n")
-  return members.length + 1
+  const members = embed.fields[0].value.split("\n");
+  return members.length + 1;
 }
 
 function notifyPartyMembers(members) {
-  let str = ''
-  for(const mem of members) {
-    str += mem.split("-")[0]
+  let str = "";
+  for (const mem of members) {
+    str += mem.split("-")[0];
   }
-  return `${str.trim()} your party is ready make sure to party everyone and then close the PartyFinder message.`
+  return `${str.trim()} your party is ready make sure to party everyone and then close the PartyFinder message.`;
+}
+
+function inParty(interaction) {
+  const members = interaction.message.embeds[0].fields[0].value.split("\n");
+  for (const member of members) {
+    const id = `${member}`.split("-")[0].trim().replace("<", "").replace("@", "").replace(">", "");
+    if (id === interaction.user.id) {
+      return true;
+    }
+  }
+  return false;
 }
 
 module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers };
