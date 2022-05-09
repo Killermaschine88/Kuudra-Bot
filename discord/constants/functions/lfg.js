@@ -6,18 +6,25 @@ function createParty(interaction) {
   const termarchers = hasTerminator(interaction.member) ? "1" : "0";
   const embed = new Discord.MessageEmbed().setTitle(`${interaction.user.tag}'s Party`).setDescription(`Party Members: 1/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`).addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`);
   const rows = [
-    createButtonRow([
+    createButtonRow([ //Everyone Controls
       { label: "Everyone", customId: ".", style: "PRIMARY", disabled: true },
       { label: "Join Party", customId: "join_party", style: "PRIMARY" },
       { label: "Leave Party", customId: "leave_party", style: "PRIMARY" },
     ]),
-    createButtonRow([
+    createButtonRow([ //Party Leader Controls
       { label: "Party Leader", customId: "..", style: "PRIMARY", disabled: true },
       { label: "Run started", customId: "run_started", style: "PRIMARY" },
       { label: "Run cancelled", customId: "run_cancelled", style: "PRIMARY" },
     ]),
-    createButtonRow([
-      { label: "Admin", customId: "...", style: "DANGER", disabled: true },
+    /*createButtonRow([ //Party Leader Requirement Controls
+      { label: "Requirements", customId: "...", style: "PRIMARY", disabled: true },
+      { label: "Hyperion", customId: "hyperion_req", style: "DANGER" },
+      { label: "Terminator", customId: "terminator_req", style: "DANGER" },
+      { label: "Kuudra Slayer +", customId: "kuudra+_req", style: "DANGER" },
+      { label: "Kuudra Slayer ++", customId: "kuudra++_req", style: "DANGER" },
+    ]),*/
+    createButtonRow([ //Admin Controls
+      { label: "Admin", customId: "....", style: "DANGER", disabled: true },
       { label: "Disband Party", customId: "disband_party", style: "DANGER" },
     ]),
   ];
@@ -188,4 +195,21 @@ function getPingRole(channel) {
   if(channel.id === "971681273015828490") return "<@&972027239581487174>"
 }
 
-module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole };
+function requirementCheck(interaction) {
+  const rows = interaction.message.components
+
+  if(rows[2].components[1].style === "SUCCESS") { //Hyperion Enjoyer
+    return { allowed: interaction.member.roles.cache.has("971832680796815460") ? true : false, role: "<@&971832680796815460" }
+  }
+  if(rows[2].components[2].style === "SUCCESS") { //Terminator Enjoyer
+    return { allowed: interaction.member.roles.cache.has("971832711876583474") ? true : false, role: "<@&971832711876583474" }
+  }
+  if(rows[2].components[3].style === "SUCCESS") { //Kuudra Slayer +
+    return { allowed: interaction.member.roles.cache.has("971677430685237310") ? true : false, role: "<@&971677430685237310" }
+  }
+  if(rows[2].components[4].style === "SUCCESS") { //Kuudra Slayer ++
+    return { allowed: interaction.member.roles.cache.has("971677499018870814") ? true : false, role: "<@&971677499018870814" }
+  }
+}
+
+module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck };

@@ -1,4 +1,4 @@
-const { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, joinHandler, getPartyMembers } = require("../constants/functions/lfg");
+const { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, joinHandler, getPartyMembers, requirementCheck } = require("../constants/functions/lfg");
 const { updateInfoEmbed } = require("../constants/functions/general");
 
 global.joinCache = {};
@@ -47,6 +47,10 @@ module.exports = {
       } else if (["disband_party"].includes(interaction.customId)) {
         return await adminHandler(interaction);
       } else if (["join_party", "leave_party"].includes(interaction.customId)) {
+        /*const check = await requirementCheck(interaction)
+        if(!check.allowed) {
+          return await interaction.followUp({content: `You are missing the following Role: ${check.role} to join this party.`, ephemeral: true})
+        }*/
         if (interaction.customId === "join_party") {
           if (!joinCache[interaction.user.id]) {
             joinCache[interaction.user.id] = [];
