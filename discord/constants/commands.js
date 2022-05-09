@@ -11,6 +11,18 @@ const commands = [
       },
     ],
   },
+  {
+    name: "verify",
+    description: "Verify your Account",
+    options: [
+      {
+        name: "ign",
+        description: "Your Minecraft IGN",
+        type: "STRING",
+        required: true,
+      },
+    ],
+  },
 ];
 
 module.exports = { commands };

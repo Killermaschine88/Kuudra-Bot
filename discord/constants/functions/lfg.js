@@ -22,8 +22,6 @@ function createParty(interaction) {
     ]),
   ];
 
-  //+1 to parties created
-
   return { embeds: [embed], components: rows };
 }
 
@@ -93,7 +91,6 @@ async function partyLeaderHandler(interaction) {
     createdCache[interaction.user.tag] = false;
     await interaction.message.thread.delete();
     return await interaction.message.delete();
-    //add +1 to counter in stats channel
   }
 }
 
@@ -104,7 +101,6 @@ async function adminHandler(interaction) {
     createdCache[interaction.message.embeds[0].title.split("'")[0].trim()] = false;
     await interaction.message.thread.delete();
     return await interaction.message.delete();
-    //add +1 to counter in stats channel
   }
 }
 
