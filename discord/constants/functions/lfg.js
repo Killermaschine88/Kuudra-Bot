@@ -144,7 +144,7 @@ async function joinHandler(interaction) {
 
     await interaction.channel.send(`<@${user.id}> your join request was accepted.`);
 
-    embed.fields[0].value += `\n<@${user.id}> - ${user.tag}`;
+    embed.fields[0].value += `\n<@${user.id}> - ${user.user.tag}`;
 
     embed.setDescription(`Party Members: ${members}/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`);
 
