@@ -22,7 +22,11 @@ function createParty(interaction) {
     ]),
   ];
 
-  return { embeds: [embed], components: rows };
+  return {
+    //content: getPingRole(interaction.channel),
+    embeds: [embed],
+    components: rows
+  };
 }
 
 function isPartyLeader(interaction, msg) {
@@ -179,4 +183,9 @@ function inParty(interaction) {
   return false;
 }
 
-module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers };
+function getPingRole(channel) {
+  if(channel.id === "971680589168123916") return "<@&972027217120993320>"
+  if(channel.id === "971681273015828490") return "<@&972027239581487174>"
+}
+
+module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole };
