@@ -37,7 +37,7 @@ module.exports = {
           return await interaction.followUp({ content: "You have already created a party.", ephemeral: true });
         }
         createdCache[interaction.user.tag] = true;
-        await updateInfoEmbed(interaction.client)
+        await updateInfoEmbed(interaction.client);
         const msg = await interaction.channel.send(createParty(interaction));
         return await msg.startThread({
           name: `${interaction.user.tag}'s Party`,

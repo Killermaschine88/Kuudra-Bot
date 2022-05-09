@@ -12,11 +12,11 @@ function createButtonRow(buttons) {
 }
 
 async function updateInfoEmbed(client) {
-  const msg = (await client.channels.cache.get("971770778896957500").messages.fetch("972061438787067944"))
-  const embed = msg.embeds[0]
-  const desc = embed.description.split(":")
-  embed.setDescription(`Parties created: ${Number(desc[1]) +1}`)
-  return await msg.edit({embeds: [embed]})
+  const msg = await client.channels.cache.get("971770778896957500").messages.fetch("972061438787067944");
+  const embed = msg.embeds[0];
+  const desc = embed.description.split(":");
+  embed.setDescription(`Parties created: ${Number(desc[1]) + 1}`);
+  return await msg.edit({ embeds: [embed] });
 }
 
 module.exports = { createButtonRow, updateInfoEmbed };
