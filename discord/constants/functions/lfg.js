@@ -200,6 +200,10 @@ function getPingRole(channel) {
 
 function requirementCheck(interaction) {
   const rows = interaction.message.components;
+  let allowed = true
+  let roles = []
+
+  //Add the role check to the statement and returm the array of missing roles
 
   if (rows[2].components[1].style === "SUCCESS") {
     //Hyperion Enjoyer

@@ -49,7 +49,7 @@ module.exports = {
       } else if (["join_party", "leave_party"].includes(interaction.customId)) {
         /*const check = await requirementCheck(interaction)
         if(!check.allowed) {
-          return await interaction.followUp({content: `You are missing the following Role: ${check.role} to join this party.`, ephemeral: true})
+          return await interaction.followUp({content: `You are missing the following ${check.roles.length > 1 ? "role" : "roles"}to join this party.\n${check.roles.join(", ")`, ephemeral: true})
         }*/
         if (interaction.customId === "join_party") {
           if (!joinCache[interaction.user.id]) {
