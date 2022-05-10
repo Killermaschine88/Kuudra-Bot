@@ -31,7 +31,7 @@ module.exports = {
 
     //Buttons
     if (interaction.isButton()) {
-      await interaction.deferUpdate();
+      await interaction.deferUpdate({ephemeral: true});
       if (["T1", "T2", "T3", "T4", "T5"].includes(interaction.customId)) {
         if (createdCache[interaction.user.tag]) {
           return await interaction.followUp({ content: "You have already created a party.", ephemeral: true });
