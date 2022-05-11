@@ -31,6 +31,15 @@ process.on("unhandledRejection", (error) => console.log(error));
 const { startAPI } = require("./api/index.js");
 startAPI();
 
+//MongoDB
+const MongoClient = require('mongodb').MongoClient;
+client.mongo = new MongoClient(process.env.URI, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
+
+client.mongo.connect();
+
 //yea
 function loadCommands(client) {
   client.messageCommands = new Discord.Collection();

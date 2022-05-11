@@ -32,6 +32,8 @@ function createParty(interaction) {
     ]),
   ];
 
+  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a party.`)
+
   return {
     //content: getPingRole(interaction.channel),
     embeds: [embed],

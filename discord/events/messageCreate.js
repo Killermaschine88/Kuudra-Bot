@@ -3,6 +3,14 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot) return;
 
+    if(message.channel.id === "972060040628404264") {
+      setTimeout(() => {
+        try {
+          message.delete()
+        } catch (e) {}
+      }, 20000)
+    }
+
     if (!message.content.startsWith(process.env.PREFIX || "?")) return;
 
     const args = message.content

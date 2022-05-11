@@ -27,8 +27,10 @@ module.exports = {
         await interaction.member.setNickname(res.name, "Verified");
         await interaction.member.roles.add("972059917240385566");
       } catch (e) {}
+
+      await updateDB(interaction, res.name, res.uuid)
       interaction.client.channels.cache.get("973232556919119942").send({ embeds: [sucEmbed(`<@${interaction.user.id}> - \`${interaction.user.tag}\` [${interaction.user.id}] verified as \`${res.name}\``)] });
-      return await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\``)] });
+      return await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\`, head over to <#973146681665269790> to claim roles.`)] });
     } else {
       return await interaction.editReply({ embeds: [errEmbed(`Couldn't verify you as \`${res.name}\`\nAccount linked to: \`${res.discord}\`\nYour Account: \`${interaction.user.tag}\``)] });
     }
@@ -55,6 +57,7 @@ async function getData(ign) {
     return {
       name: name,
       discord: discord,
+      uuid: uuid
     };
   } catch (e) {
     console.log(e);
@@ -69,4 +72,14 @@ async function getUUID(ign) {
   } else {
     return null;
   }
+}
+
+async function updateDB(interaction, ign, uuid) {
+  const collection = interaction.client.mongo.db('KG').collection('users');
+
+  return await collection.updateOne(
+    { "discord.id": interaction.user.id },
+    { $set: { discord: { id: interaction.user.id }, minecraft: { name: ign, uuid: uuid } }},
+    { upsert: true }
+  )
 }
