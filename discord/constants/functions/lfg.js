@@ -32,7 +32,7 @@ function createParty(interaction) {
     ]),
   ];
 
-  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a party.`)
+  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a party.`);
 
   return {
     //content: getPingRole(interaction.channel),
@@ -202,8 +202,8 @@ function getPingRole(channel) {
 
 function requirementCheck(interaction) {
   const rows = interaction.message.components;
-  let allowed = true
-  let roles = []
+  let allowed = true;
+  let roles = [];
 
   //Add the role check to the statement and returm the array of missing roles
 

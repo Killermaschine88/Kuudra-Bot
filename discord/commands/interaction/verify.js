@@ -2,6 +2,9 @@ const Discord = require("discord.js");
 const axios = require("axios");
 const { errEmbed, sucEmbed } = require("../../constants/functions/embed");
 
+//Skyblock
+const { decodeAllInventories, itemCheck, getAPIStatus } = require("../../constants/functions/skyblock");
+
 module.exports = {
   name: "verify",
   devOnly: false,
@@ -28,11 +31,27 @@ module.exports = {
         await interaction.member.roles.add("972059917240385566");
       } catch (e) {}
 
-      await updateDB(interaction, res.name, res.uuid)
+      await updateDB(interaction, res.name, res.uuid);
+
+      //Automatic role check
+      const profile = await getItemData(res.uuid);
+      if (profile.api) {
+        if (profile.hasHyperion) {
+          try {
+            interaction.member.roles.add("971832680796815460");
+          } catch (e) {}
+        }
+        if (profile.hasTerminator) {
+          try {
+            interaction.member.roles.add("971832711876583474");
+          } catch (e) {}
+        }
+      }
+      
       interaction.client.channels.cache.get("973232556919119942").send({ embeds: [sucEmbed(`<@${interaction.user.id}> - \`${interaction.user.tag}\` [${interaction.user.id}] verified as \`${res.name}\``)] });
-      return await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\`, head over to <#973146681665269790> to claim roles.`)] });
+      await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\``)] });
     } else {
-      return await interaction.editReply({ embeds: [errEmbed(`Couldn't verify you as \`${res.name}\`\nAccount linked to: \`${res.discord}\`\nYour Account: \`${interaction.user.tag}\``)] });
+      await interaction.editReply({ embeds: [errEmbed(`Couldn't verify you as \`${res.name}\`\nAccount linked to: \`${res.discord}\`\nYour Account: \`${interaction.user.tag}\``)] });
     }
   },
 };
@@ -57,7 +76,7 @@ async function getData(ign) {
     return {
       name: name,
       discord: discord,
-      uuid: uuid
+      uuid: uuid,
     };
   } catch (e) {
     console.log(e);
@@ -75,9 +94,20 @@ async function getUUID(ign) {
 }
 
 async function updateDB(interaction, ign, uuid) {
-  return await interaction.client.collection.updateOne(
-    { "discord.id": interaction.user.id },
-    { $set: { discord: { id: interaction.user.id }, minecraft: { name: ign, uuid: uuid } }},
-    { upsert: true }
-  )
+  return await interaction.client.collection.updateOne({ "discord.id": interaction.user.id }, { $set: { discord: { id: interaction.user.id }, minecraft: { name: ign, uuid: uuid } } }, { upsert: true });
+}
+
+async function getItemData(uuid) {
+  const data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
+  const profile = data.profiles[data.profiles.length - 1];
+  const player = profile.members[uuid];
+  const items = await decodeAllInventories(player);
+  const api = getAPIStatus(player);
+  if (!api.inventory) return { hasHyperion: false, hasTerminator: false, api: false };
+  const hasItems = await itemCheck(items);
+  return {
+    hasHyperion: hasItems.hasHyperion,
+    hasTerminator: hasItems.hasTerminator,
+    api: true,
+  };
 }

@@ -8,7 +8,7 @@ start();
 const Discord = require("discord.js");
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"] });
 client.login(process.env.TOKEN);
-client.reload = loadCommands
+client.reload = loadCommands;
 
 loadCommands(client);
 
@@ -32,14 +32,14 @@ const { startAPI } = require("./api/index.js");
 startAPI();
 
 //MongoDB
-const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require("mongodb").MongoClient;
 client.mongo = new MongoClient(process.env.URI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 client.mongo.connect();
-client.collection = client.mongo.db('KG').collection('users');
+client.collection = client.mongo.db("KG").collection("users");
 
 //yea
 function loadCommands(client) {
