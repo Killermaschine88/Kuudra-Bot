@@ -12,7 +12,7 @@ async function itemCheck(inv) {
   if (inv.inv_contents.length > 1) {
     //Check Inventory
     for (const item of inv.inv_contents) {
-      const id = item.tag.ExtraAttributes.id;
+      const id = item?.tag?.ExtraAttributes?.id;
       if (witherblades.includes(id)) hyperion = true;
       if (id === "TERMINATOR") terminator = true;
     }
@@ -21,7 +21,7 @@ async function itemCheck(inv) {
   if (inv.backpack_contents.length > 1) {
     //Check Backpacks
     for (const item of inv.backpack_contents) {
-      const id = item.tag.ExtraAttributes.id;
+      const id = item?.tag?.ExtraAttributes?.id;
       if (witherblades.includes(id)) hyperion = true;
       if (id === "TERMINATOR") terminator = true;
     }
@@ -30,7 +30,7 @@ async function itemCheck(inv) {
   if (inv.ender_chest_contents.length > 1) {
     //Check Ender Chest
     for (const item of inv.ender_chest_contents) {
-      const id = item.tag.ExtraAttributes.id;
+      const id = item?.tag?.ExtraAttributes?.id;
       if (witherblades.includes(id)) hyperion = true;
       if (id === "TERMINATOR") terminator = true;
     }

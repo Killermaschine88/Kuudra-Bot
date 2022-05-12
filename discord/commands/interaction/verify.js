@@ -38,12 +38,12 @@ module.exports = {
       if (profile.api) {
         if (profile.hasHyperion) {
           try {
-            interaction.member.roles.add("971832680796815460");
+            interaction.member.roles.add("971832680796815460", "Hyperion detected when verifying");
           } catch (e) {}
         }
         if (profile.hasTerminator) {
           try {
-            interaction.member.roles.add("971832711876583474");
+            interaction.member.roles.add("971832711876583474", "Terminator detected when verifying");
           } catch (e) {}
         }
       }
@@ -98,8 +98,9 @@ async function updateDB(interaction, ign, uuid) {
 }
 
 async function getItemData(uuid) {
-  const data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
-  const profile = data.profiles[data.profiles.length - 1];
+  let data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
+  data.profiles = data.profiles.filter(e => e.last_save)
+  const profile = data.profiles.sort((a, b) => b.last_save - a.last_save)[0]
   const player = profile.members[uuid];
   const items = await decodeAllInventories(player);
   const api = getAPIStatus(player);
