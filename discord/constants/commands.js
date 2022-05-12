@@ -23,6 +23,18 @@ const commands = [
       },
     ],
   },
+  {
+    name: "get-user",
+    description: "Get User data",
+    options: [
+      {
+        name: "user",
+        description: "The User to check",
+        type: "USER",
+        required: true,
+      },
+    ],
+  },
 ];
 
 module.exports = { commands };

@@ -75,9 +75,7 @@ async function getUUID(ign) {
 }
 
 async function updateDB(interaction, ign, uuid) {
-  const collection = interaction.client.mongo.db('KG').collection('users');
-
-  return await collection.updateOne(
+  return await interaction.client.collection.updateOne(
     { "discord.id": interaction.user.id },
     { $set: { discord: { id: interaction.user.id }, minecraft: { name: ign, uuid: uuid } }},
     { upsert: true }

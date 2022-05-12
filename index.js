@@ -39,6 +39,7 @@ client.mongo = new MongoClient(process.env.URI, {
 });
 
 client.mongo.connect();
+client.collection = client.mongo.db('KG').collection('users');
 
 //yea
 function loadCommands(client) {
