@@ -101,6 +101,7 @@ async function getItemData(uuid) {
   let data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
   data.profiles = data.profiles.filter(e => e.last_save)
   const profile = data.profiles.sort((a, b) => b.last_save - a.last_save)[0]
+  //console.log(data.profiles)
   const player = profile.members[uuid];
   const items = await decodeAllInventories(player);
   const api = getAPIStatus(player);
