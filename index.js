@@ -27,6 +27,8 @@ for (const file of eventFiles) {
 process.on("uncaughtException", (error) => console.log(error));
 process.on("unhandledRejection", (error) => console.log(error));
 
+//Discord Channel Console
+
 //Server
 const { startAPI } = require("./api/index.js");
 startAPI();
