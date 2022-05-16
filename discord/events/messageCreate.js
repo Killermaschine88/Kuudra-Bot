@@ -3,12 +3,12 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot) return;
 
-    if (message.channel.id === "972060040628404264") {
+    if (message.channel.id === "972060040628404264" && !message.member.permissions.has("ADMINISTRATOR")) {
       setTimeout(() => {
         try {
           message.delete();
         } catch (e) {}
-      }, 20000);
+      }, 30000);
     }
 
     if (!message.content.startsWith(process.env.PREFIX || "?")) return;

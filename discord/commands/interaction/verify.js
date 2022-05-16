@@ -11,18 +11,25 @@ module.exports = {
   async execute(interaction) {
     const ign = interaction.options.getString("ign");
 
+    await interaction.editReply({embeds: [new Discord.MessageEmbed().setDescription("Attempting to verify you...")]})
+
     setTimeout(async () => {
       try {
         await interaction.deleteReply();
       } catch (e) {}
-    }, 16000);
+    }, 20000);
 
     const res = await getData(ign);
+    
     if (res === "API Error") {
       return await interaction.editReply({ embeds: [errEmbed("An Error occured while requesting API Data, try again later.")] });
     }
     if (res.discord === "None") {
       return await interaction.editReply({ embeds: [errEmbed(`The Minecraft Account your provided is linked to: \`${res.discord}\`\nYour Discord Account is: \`${interaction.user.tag}\``)] });
+    }
+
+    if (res.name === "None") {
+      return await interaction.editReply({ embeds: [errEmbed(`The Minecraft Account your provided is invalid.`)] });
     }
 
     if (res.discord === interaction.user.tag) {
@@ -67,7 +74,7 @@ async function getData(ign) {
   try {
     const res = (await axios.get(`https://api.hypixel.net/player?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
     if (res.success) {
-      name = res.player.displayname;
+      name = res.player?.displayname || "None";
       discord = res.player.socialMedia?.links?.DISCORD || "None";
     } else {
       name = res.player.displayName;
@@ -85,7 +92,11 @@ async function getData(ign) {
 }
 
 async function getUUID(ign) {
-  const response = (await axios.get(`https://api.mojang.com/users/profiles/minecraft/${ign}`))?.data;
+  let response = null
+  try {
+    response = (await axios.get(`https://api.mojang.com/users/profiles/minecraft/${ign}`))?.data;
+  } catch (e) {}
+  
   if (response?.id) {
     return response.id;
   } else {
