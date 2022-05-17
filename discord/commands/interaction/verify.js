@@ -11,7 +11,7 @@ module.exports = {
   async execute(interaction) {
     const ign = interaction.options.getString("ign");
 
-    await interaction.editReply({embeds: [new Discord.MessageEmbed().setDescription("Attempting to verify you...")]})
+    await interaction.editReply({ embeds: [new Discord.MessageEmbed().setDescription("Attempting to verify you...")] });
 
     setTimeout(async () => {
       try {
@@ -20,7 +20,7 @@ module.exports = {
     }, 20000);
 
     const res = await getData(ign);
-    
+
     if (res === "API Error") {
       return await interaction.editReply({ embeds: [errEmbed("An Error occured while requesting API Data, try again later.")] });
     }
@@ -54,7 +54,7 @@ module.exports = {
           } catch (e) {}
         }
       }
-      
+
       interaction.client.channels.cache.get("973232556919119942").send({ embeds: [sucEmbed(`<@${interaction.user.id}> - \`${interaction.user.tag}\` [${interaction.user.id}] verified as \`${res.name}\``)] });
       await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\``)] });
     } else {
@@ -92,11 +92,11 @@ async function getData(ign) {
 }
 
 async function getUUID(ign) {
-  let response = null
+  let response = null;
   try {
     response = (await axios.get(`https://api.mojang.com/users/profiles/minecraft/${ign}`))?.data;
   } catch (e) {}
-  
+
   if (response?.id) {
     return response.id;
   } else {
@@ -110,8 +110,8 @@ async function updateDB(interaction, ign, uuid) {
 
 async function getItemData(uuid) {
   let data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
-  data.profiles = data.profiles.filter(e => e.last_save)
-  const profile = data.profiles.sort((a, b) => b.last_save - a.last_save)[0]
+  data.profiles = data.profiles.filter((e) => e.last_save);
+  const profile = data.profiles.sort((a, b) => b.last_save - a.last_save)[0];
   //console.log(data.profiles)
   const player = profile.members[uuid];
   const items = await decodeAllInventories(player);

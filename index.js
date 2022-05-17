@@ -9,6 +9,8 @@ const Discord = require("discord.js");
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"] });
 client.login(process.env.TOKEN);
 client.reload = loadCommands;
+const { DiscordTogether } = require("discord-together");
+client.discordTogether = new DiscordTogether(client);
 
 loadCommands(client);
 
