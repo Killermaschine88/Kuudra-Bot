@@ -103,7 +103,7 @@ async function memberHandler(interaction) {
 
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
-  if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time < Date.now()) {
+  if (["run_started", "run_cancelled"].includes(interaction.customId) && !createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time > Date.now()) {
     createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     await interaction.message.thread.delete();
     return await interaction.message.delete();

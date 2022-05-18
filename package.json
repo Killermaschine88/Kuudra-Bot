@@ -4,7 +4,8 @@
   "description": "None",
   "main": "index.js",
   "scripts": {
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "start": "pm2 start index.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "mongodb": "^4.6.0",
     "nbt": "^0.8.1",
     "pako": "^2.0.4",
+    "pm2": "^5.2.0",
     "prettier": "^2.6.2",
     "pretty-ms": "^7.0.1",
     "prismarine-nbt": "^2.2.1",

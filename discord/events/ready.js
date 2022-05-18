@@ -5,9 +5,9 @@ module.exports = {
 
     //Influx Metrics Stuff
     const { postMetrics } = require("../../global/influx/index.js");
-    setInterval(() => {
+    /*setInterval(() => {
       postMetrics(client);
-    }, 60000)
+    }, 60000)*/
 
     client.user.setActivity("Kuudra die", {
       type: "WATCHING",
