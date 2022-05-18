@@ -13,6 +13,7 @@ const { DiscordTogether } = require("discord-together");
 client.discordTogether = new DiscordTogether(client);
 
 loadCommands(client);
+global.dclient = client
 
 const eventFiles = fs.readdirSync(__dirname + "/discord/events").filter((file) => file.endsWith(".js"));
 

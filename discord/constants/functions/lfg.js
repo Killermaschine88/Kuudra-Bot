@@ -84,7 +84,11 @@ async function memberHandler(interaction) {
       }
     }
 
-    joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1);
+    try {
+      joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1);
+    } catch (e) {
+      log(e.stack, "ERROR")
+    }
 
     const split = embed.description.split(":");
     let hypemages = Number(split[2].charAt(1));
@@ -104,7 +108,11 @@ async function memberHandler(interaction) {
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
   if (["run_started", "run_cancelled"].includes(interaction.customId) && !createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time > Date.now()) {
-    createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
+    try {
+      createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
+    } catch (e) {
+      log(e.stack, "ERROR")
+    }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   } else {
@@ -116,7 +124,11 @@ async function adminHandler(interaction) {
   if (!isAdmin(interaction)) return await interaction.followUp({ content: "You are not an admin in this server.", ephemeral: true });
 
   if (interaction.customId === "disband_party") {
-    createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
+    try {
+      createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
+    } catch (e) {
+      log(e.stack, "ERROR")
+    }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   }
