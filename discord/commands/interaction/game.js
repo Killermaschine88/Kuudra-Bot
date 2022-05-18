@@ -9,6 +9,6 @@ module.exports = {
     const game = interaction.options.getString("type");
 
     const invite = await interaction.client.discordTogether.createTogetherCode(id, game);
-    return await interaction.editReply({embeds: [sucEmbed(`[Click here to join](${invite.code})`)]});
+    return await interaction.editReply({ embeds: [sucEmbed(`[Click here to join](${invite.code})`)] });
   },
 };

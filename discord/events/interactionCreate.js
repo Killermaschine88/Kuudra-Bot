@@ -33,10 +33,10 @@ module.exports = {
     if (interaction.isButton()) {
       await interaction.deferUpdate({ ephemeral: true });
       if (["T1", "T2", "T3", "T4", "T5"].includes(interaction.customId)) {
-        if (createdCache[interaction.user.tag]) {
+        if (createdCache[interaction.user.tag]?.[interaction.customId]?.created) {
           return await interaction.followUp({ content: "You have already created a party.", ephemeral: true });
         }
-        createdCache[interaction.user.tag] = true;
+        (createdCache[interaction.user.tag] ??= {})[interaction.customId] = { created: true, time: Date.now() + 300000 }
         await updateInfoEmbed(interaction.client);
         const msg = await interaction.channel.send(createParty(interaction));
         return await msg.startThread({

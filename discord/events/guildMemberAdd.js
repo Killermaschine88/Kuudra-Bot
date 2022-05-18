@@ -6,11 +6,6 @@ module.exports = {
 };
 
 function getCount(member) {
-  let ending = "";
-  let count = `${member.guild.memberCount}`;
-  if (count.endsWith("1")) ending = "st";
-  else if (count.endsWith("2")) ending = "nd";
-  else if (count.endsWith("3")) ending = "rd";
-  else ending = "th";
-  return `${count}${ending}`;
+const count = member.guild.memberCount
+  return `${count}th`;
 }

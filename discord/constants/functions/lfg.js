@@ -32,10 +32,10 @@ function createParty(interaction) {
     ]),
   ];
 
-  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a party.`);
+  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a ${getTier(interaction.channel.id)} party.`);
 
   return {
-    //content: getPingRole(interaction.channel),
+    content: getPingRole(interaction.channel),
     embeds: [embed],
     components: rows,
   };
@@ -103,10 +103,12 @@ async function memberHandler(interaction) {
 
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
-  if (["run_started", "run_cancelled"].includes(interaction.customId)) {
-    createdCache[interaction.user.tag] = false;
+  if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time < Date.now()) {
+    createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     await interaction.message.thread.delete();
     return await interaction.message.delete();
+  } else {
+    return await interaction.followUp({ content: "You just recently created this party and it can't be closed immediately.", ephemeral: true })
   }
 }
 
@@ -114,7 +116,7 @@ async function adminHandler(interaction) {
   if (!isAdmin(interaction)) return await interaction.followUp({ content: "You are not an admin in this server.", ephemeral: true });
 
   if (interaction.customId === "disband_party") {
-    createdCache[interaction.message.embeds[0].title.split("'")[0].trim()] = false;
+    createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   }
@@ -223,6 +225,11 @@ function requirementCheck(interaction) {
     //Kuudra Slayer ++
     return { allowed: interaction.member.roles.cache.has("971677499018870814") ? true : false, role: "<@&971677499018870814" };
   }
+}
+
+function getTier(id) {
+  if(id === "971680589168123916") return "T1"
+  if(id === "971681273015828490") return "T2"
 }
 
 module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck };
