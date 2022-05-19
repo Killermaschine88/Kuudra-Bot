@@ -1,14 +1,17 @@
 const Discord = require("discord.js");
 const { createButtonRow } = require("./general");
-const hype = "" //"<:hyperion:975726394619351060>"
-const term = "" //"<:terminator:975726471907778630>"
+const hype = ""; //"<:hyperion:975726394619351060>"
+const term = ""; //"<:terminator:975726471907778630>"
 
 async function createParty(interaction) {
   const hypemages = hasHyperion(interaction.member) ? "1" : "0";
   const termarchers = hasTerminator(interaction.member) ? "1" : "0";
-  const embed = new Discord.MessageEmbed().setTitle(`${interaction.user.tag}'s Party`).setDescription(`Party Members: 1/4\n${hype} Hyperion Mages: ${hypemages}\n${term} Terminator Archers: ${termarchers}`).addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`).setThumbnail(`https://visage.surgeplay.com/head/${( await interaction.client.collection.findOne({ "discord.id": interaction.user.id })).minecraft.uuid }`)
+  const embed = new Discord.MessageEmbed()
+    .setTitle(`${interaction.user.tag}'s Party`)
+    .setDescription(`Party Members: 1/4\n${hype} Hyperion Mages: ${hypemages}\n${term} Terminator Archers: ${termarchers}`)
+    .addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`)
+    .setThumbnail(`https://visage.surgeplay.com/head/${(await interaction.client.collection.findOne({ "discord.id": interaction.user.id })).minecraft.uuid}`);
 
-  
   const rows = [
     createButtonRow([
       //Everyone Controls
@@ -91,7 +94,7 @@ async function memberHandler(interaction) {
     try {
       joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1);
     } catch (e) {
-      log(e.stack, "ERROR")
+      log(e.stack, "ERROR");
     }
 
     const split = embed.description.split(":");
@@ -115,7 +118,7 @@ async function partyLeaderHandler(interaction) {
     try {
       createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     } catch (e) {
-      log(e.stack, "ERROR")
+      log(e.stack, "ERROR");
     }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
@@ -123,7 +126,7 @@ async function partyLeaderHandler(interaction) {
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   } else {
-    return await interaction.followUp({ content: "You just recently created this party and it can't be closed immediately.", ephemeral: true })
+    return await interaction.followUp({ content: "You just recently created this party and it can't be closed immediately.", ephemeral: true });
   }
 }
 
@@ -247,8 +250,8 @@ function requirementCheck(interaction) {
 }
 
 function getTier(id) {
-  if(id === "971680589168123916") return "T1"
-  if(id === "971681273015828490") return "T2"
+  if (id === "971680589168123916") return "T1";
+  if (id === "971681273015828490") return "T2";
 }
 
 module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck, getTier };

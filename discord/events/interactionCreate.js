@@ -36,7 +36,7 @@ module.exports = {
         if (createdCache[interaction.user.tag]?.[interaction.customId]?.created) {
           return await interaction.followUp({ content: "You have already created a party.", ephemeral: true });
         }
-        (createdCache[interaction.user.tag] ??= {})[interaction.customId] = { created: true, time: Date.now() + 300000 }
+        (createdCache[interaction.user.tag] ??= {})[interaction.customId] = { created: true, time: Date.now() + 300000 };
         await updateInfoEmbed(interaction.client);
         const msg = await interaction.channel.send(await createParty(interaction));
         return await msg.startThread({

@@ -6,6 +6,6 @@ module.exports = {
 };
 
 function getCount(member) {
-const count = member.guild.memberCount
+  const count = member.guild.memberCount;
   return `${count}th`;
 }

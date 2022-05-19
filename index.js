@@ -13,7 +13,7 @@ const { DiscordTogether } = require("discord-together");
 client.discordTogether = new DiscordTogether(client);
 
 loadCommands(client);
-global.dclient = client
+global.dclient = client;
 
 const eventFiles = fs.readdirSync(__dirname + "/discord/events").filter((file) => file.endsWith(".js"));
 
@@ -28,10 +28,10 @@ for (const file of eventFiles) {
 
 //Errors that might slip
 process.on("uncaughtException", (error) => {
-  log(error, "ERROR")
+  log(error, "ERROR");
 });
 process.on("unhandledRejection", (error) => {
-  log(error, "ERROR")
+  log(error, "ERROR");
 });
 
 //Server

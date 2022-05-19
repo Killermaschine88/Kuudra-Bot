@@ -1,7 +1,7 @@
 module.exports = {
   name: "ready",
   async execute(client) {
-    log("Ready")
+    log("Ready");
     log(`Logged into Discord`);
 
     //Influx Metrics Stuff
