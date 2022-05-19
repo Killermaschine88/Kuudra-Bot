@@ -1,22 +1,26 @@
 const Discord = require("discord.js");
 const { createButtonRow } = require("./general");
+const hype = "" //"<:hyperion:975726394619351060>"
+const term = "" //"<:terminator:975726471907778630>"
 
-function createParty(interaction) {
+async function createParty(interaction) {
   const hypemages = hasHyperion(interaction.member) ? "1" : "0";
   const termarchers = hasTerminator(interaction.member) ? "1" : "0";
-  const embed = new Discord.MessageEmbed().setTitle(`${interaction.user.tag}'s Party`).setDescription(`Party Members: 1/4\nHyperion Mages: ${hypemages}\nTerminator Archers: ${termarchers}`).addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`);
+  const embed = new Discord.MessageEmbed().setTitle(`${interaction.user.tag}'s Party`).setDescription(`Party Members: 1/4\n${hype} Hyperion Mages: ${hypemages}\n${term} Terminator Archers: ${termarchers}`).addField("Party Members", `<@${interaction.user.id}> - ${interaction.user.tag}`).setThumbnail(`https://visage.surgeplay.com/head/${( await interaction.client.collection.findOne({ "discord.id": interaction.user.id })).minecraft.uuid }`)
+
+  
   const rows = [
     createButtonRow([
       //Everyone Controls
-      { label: "Everyone", customId: ".", style: "PRIMARY", disabled: true },
-      { label: "Join Party", customId: "join_party", style: "PRIMARY" },
-      { label: "Leave Party", customId: "leave_party", style: "PRIMARY" },
+      { label: "Everyone", customId: ".", style: "SECONDARY", disabled: true },
+      { label: "Join Party", customId: "join_party", style: "SECONDARY" },
+      { label: "Leave Party", customId: "leave_party", style: "SECONDARY" },
     ]),
     createButtonRow([
       //Party Leader Controls
       { label: "Party Leader", customId: "..", style: "PRIMARY", disabled: true },
-      { label: "Run started", customId: "run_started", style: "PRIMARY" },
-      { label: "Run cancelled", customId: "run_cancelled", style: "PRIMARY" },
+      { label: "Started / Cancelled", customId: "run_started", style: "PRIMARY" },
+      //{ label: "Run cancelled", customId: "run_cancelled", style: "PRIMARY" },
     ]),
     /*createButtonRow([ //Party Leader Requirement Controls
       { label: "Requirements", customId: "...", style: "PRIMARY", disabled: true },
@@ -35,7 +39,7 @@ function createParty(interaction) {
   interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a ${getTier(interaction.channel.id)} party.`);
 
   return {
-    content: getPingRole(interaction.channel),
+    content: interaction.member.roles.cache.has("976567057262977084") ? null : getPingRole(interaction.channel), //If User has Ping Bypass Role dont ping users
     embeds: [embed],
     components: rows,
   };
@@ -107,12 +111,15 @@ async function memberHandler(interaction) {
 
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
-  if (["run_started", "run_cancelled"].includes(interaction.customId) && !createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time > Date.now()) {
+  if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time < Date.now()) {
     try {
       createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     } catch (e) {
       log(e.stack, "ERROR")
     }
+    await interaction.message.thread.delete();
+    return await interaction.message.delete();
+  } else if (!createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time) {
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   } else {
@@ -127,7 +134,7 @@ async function adminHandler(interaction) {
     try {
       createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
     } catch (e) {
-      log(e.stack, "ERROR")
+      //log(e.stack, "ERROR")
     }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
@@ -244,4 +251,4 @@ function getTier(id) {
   if(id === "971681273015828490") return "T2"
 }
 
-module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck };
+module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck, getTier };

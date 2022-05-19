@@ -1,4 +1,4 @@
-const { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, joinHandler, getPartyMembers, requirementCheck } = require("../constants/functions/lfg");
+const { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, joinHandler, getPartyMembers, requirementCheck, getTier } = require("../constants/functions/lfg");
 const { updateInfoEmbed } = require("../constants/functions/general");
 
 global.joinCache = {};
@@ -25,7 +25,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: command?.ephemeral ? true : false });
         command.execute(interaction);
       } catch (e) {
-        log(e, "ERROR");
+        log(e.stack, "ERROR", interaction);
       }
     }
 
@@ -38,7 +38,7 @@ module.exports = {
         }
         (createdCache[interaction.user.tag] ??= {})[interaction.customId] = { created: true, time: Date.now() + 300000 }
         await updateInfoEmbed(interaction.client);
-        const msg = await interaction.channel.send(createParty(interaction));
+        const msg = await interaction.channel.send(await createParty(interaction));
         return await msg.startThread({
           name: `${interaction.user.tag}'s Party`,
         });

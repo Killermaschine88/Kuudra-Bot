@@ -15,7 +15,7 @@ module.exports = {
 
     const embed = new Discord.MessageEmbed().setTitle(`${name} Kuudra`).setDescription(`Click the "Create Group" button on this embed to start a Group.`);
 
-    const row = createButtonRow([{ label: "Create Group", customId: "T1", style: "PRIMARY" }]);
+    const row = createButtonRow([{ label: "Create Group", customId: getPanelName(channel.id), style: "PRIMARY" }]);
 
     await channel.send({ embeds: [embed], components: [row] });
     await interaction.editReply("Panel sent!");
