@@ -9,7 +9,7 @@ function start() {
     if (type === "INFO" && str !== "Ready") {
       console.log(`${new Date().toLocaleTimeString()} > ${str}`);
     } else if (type === "ERROR" && str !== "Ready") {
-      console.log(`${color.red(`${new Date().toLocaleTimeString()} > ${str}`)}`);
+      console.error(`${color.red(`${new Date().toLocaleTimeString()} > ${str.stack}`)}`);
     }
 
     if(ready && str !== "Ready") {
