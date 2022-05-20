@@ -8,7 +8,7 @@ module.exports = {
         try {
           message.delete();
         } catch (e) {
-          log(e.stack, "ERROR")
+          log(e.stack, "ERROR");
         }
       }, 30000);
     }
