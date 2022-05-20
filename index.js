@@ -28,10 +28,10 @@ for (const file of eventFiles) {
 
 //Errors that might slip
 process.on("uncaughtException", (error) => {
-  log(error, "ERROR");
+  log(error.stack, "ERROR");
 });
 process.on("unhandledRejection", (error) => {
-  log(error, "ERROR");
+  log(error.stack, "ERROR");
 });
 
 //Server

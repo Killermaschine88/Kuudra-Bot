@@ -7,9 +7,9 @@ function start() {
       ready = true;
     }
     if (type === "INFO" && str !== "Ready") {
-      console.log(`${new Date().toLocaleTimeString()} > ${str}`);
+      process.stdout.write(`${new Date().toLocaleTimeString()} > ${str}\n`);
     } else if (type === "ERROR" && str !== "Ready") {
-      console.error(`${color.red(`${new Date().toLocaleTimeString()} > ${str.stack}`)}`);
+      console.error(`${color.red(`${new Date().toLocaleTimeString()} > ${str}`)}`);
     }
 
     if (ready && str !== "Ready") {

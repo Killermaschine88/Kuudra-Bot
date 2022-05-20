@@ -7,7 +7,9 @@ module.exports = {
       setTimeout(() => {
         try {
           message.delete();
-        } catch (e) {}
+        } catch (e) {
+          log(e.stack, "ERROR")
+        }
       }, 30000);
     }
 

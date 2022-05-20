@@ -16,7 +16,9 @@ module.exports = {
     setTimeout(async () => {
       try {
         await interaction.deleteReply();
-      } catch (e) {}
+      } catch (e) {
+        log(e.stack, "ERROR")
+      }
     }, 20000);
 
     const res = await getData(ign);
@@ -36,7 +38,9 @@ module.exports = {
       try {
         await interaction.member.setNickname(res.name, "Verified");
         await interaction.member.roles.add("972059917240385566");
-      } catch (e) {}
+      } catch (e) {
+        log(e.stack, "ERROR")
+      }
 
       await updateDB(interaction, res.name, res.uuid);
 
@@ -46,12 +50,16 @@ module.exports = {
         if (profile.hasHyperion) {
           try {
             interaction.member.roles.add("971832680796815460", "Hyperion detected when verifying");
-          } catch (e) {}
+          } catch (e) {
+            log(e.stack, "ERROR")
+          }
         }
         if (profile.hasTerminator) {
           try {
             interaction.member.roles.add("971832711876583474", "Terminator detected when verifying");
-          } catch (e) {}
+          } catch (e) {
+            log(e.stack, "ERROR")
+          }
         }
       }
 
@@ -86,7 +94,7 @@ async function getData(ign) {
       uuid: uuid,
     };
   } catch (e) {
-    console.log(e);
+    log(e.stack, "ERROR");
     return "API Error";
   }
 }
@@ -95,7 +103,9 @@ async function getUUID(ign) {
   let response = null;
   try {
     response = (await axios.get(`https://api.mojang.com/users/profiles/minecraft/${ign}`))?.data;
-  } catch (e) {}
+  } catch (e) {
+    log(e.stack, "ERROR")
+  }
 
   if (response?.id) {
     return response.id;
@@ -112,7 +122,6 @@ async function getItemData(uuid) {
   let data = (await axios.get(`https://api.hypixel.net/skyblock/profiles?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
   data.profiles = data.profiles.filter((e) => e.last_save);
   const profile = data.profiles.sort((a, b) => b.last_save - a.last_save)[0];
-  //console.log(data.profiles)
   const player = profile.members[uuid];
   const items = await decodeAllInventories(player);
   const api = getAPIStatus(player);

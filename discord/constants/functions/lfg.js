@@ -94,7 +94,7 @@ async function memberHandler(interaction) {
     try {
       joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1);
     } catch (e) {
-      log(e.stack, "ERROR");
+      //log(e.stack, "ERROR"); Dont log here just supress error
     }
 
     const split = embed.description.split(":");
@@ -118,7 +118,7 @@ async function partyLeaderHandler(interaction) {
     try {
       createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     } catch (e) {
-      log(e.stack, "ERROR");
+      //log(e.stack, "ERROR"); Dont log here just supress error
     }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
@@ -137,7 +137,7 @@ async function adminHandler(interaction) {
     try {
       createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
     } catch (e) {
-      //log(e.stack, "ERROR")
+      //log(e.stack, "ERROR") Dont log here just supress error
     }
     await interaction.message.thread.delete();
     return await interaction.message.delete();
