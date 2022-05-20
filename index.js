@@ -15,6 +15,10 @@ client.discordTogether = new DiscordTogether(client);
 loadCommands(client);
 global.dclient = client;
 
+//Assign Mongo Utils
+/*const { findOne } = require("./discord/constants/functions/mongo")
+client.mongo.findOne = findOne*/
+
 const eventFiles = fs.readdirSync(__dirname + "/discord/events").filter((file) => file.endsWith(".js"));
 
 for (const file of eventFiles) {
