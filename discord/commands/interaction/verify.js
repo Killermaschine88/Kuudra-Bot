@@ -16,9 +16,7 @@ module.exports = {
     setTimeout(async () => {
       try {
         await interaction.deleteReply();
-      } catch (e) {
-        log(e.stack, "ERROR");
-      }
+      } catch (e) {} //Ignore Error
     }, 20000);
 
     const res = await getData(ign);
@@ -38,9 +36,7 @@ module.exports = {
       try {
         await interaction.member.setNickname(res.name, "Verified");
         await interaction.member.roles.add("972059917240385566");
-      } catch (e) {
-        log(e.stack, "ERROR");
-      }
+      } catch (e) {} //Ignore Error
 
       await updateDB(interaction, res.name, res.uuid);
 
@@ -50,16 +46,12 @@ module.exports = {
         if (profile.hasHyperion) {
           try {
             interaction.member.roles.add("971832680796815460", "Hyperion detected when verifying");
-          } catch (e) {
-            log(e.stack, "ERROR");
-          }
+          } catch (e) {} //Ignore Error
         }
         if (profile.hasTerminator) {
           try {
             interaction.member.roles.add("971832711876583474", "Terminator detected when verifying");
-          } catch (e) {
-            log(e.stack, "ERROR");
-          }
+          } catch (e) {} //Ignore Error
         }
       }
 
@@ -94,7 +86,7 @@ async function getData(ign) {
       uuid: uuid,
     };
   } catch (e) {
-    log(e.stack, "ERROR");
+    log({ str: e.stack, type: "ERROR", origin: "getData Function (Verify Command)" });
     return "API Error";
   }
 }
@@ -104,7 +96,7 @@ async function getUUID(ign) {
   try {
     response = (await axios.get(`https://api.mojang.com/users/profiles/minecraft/${ign}`))?.data;
   } catch (e) {
-    log(e.stack, "ERROR");
+    log({ str: e.stack, type: "ERROR", origin: "getUUID Function (Verify Command)" });
   }
 
   if (response?.id) {

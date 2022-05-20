@@ -1,8 +1,8 @@
 module.exports = {
   name: "ready",
   async execute(client) {
-    log("Ready");
-    log(`Logged into Discord`);
+    log({ str: "Ready" });
+    log({ str: `Logged into Discord`, origin: "Ready Event" });
 
     client.user.setActivity("Kuudra die", {
       type: "WATCHING",

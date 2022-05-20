@@ -93,9 +93,7 @@ async function memberHandler(interaction) {
 
     try {
       joinCache[interaction.user.id]?.splice(joinCache[interaction.user.id].indexOf(interaction.message.id), 1);
-    } catch (e) {
-      //log(e.stack, "ERROR"); Dont log here just supress error
-    }
+    } catch (e) {}
 
     const split = embed.description.split(":");
     let hypemages = Number(split[2].charAt(1));
@@ -117,9 +115,8 @@ async function partyLeaderHandler(interaction) {
   if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time < Date.now()) {
     try {
       createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
-    } catch (e) {
-      //log(e.stack, "ERROR"); Dont log here just supress error
-    }
+    } catch (e) {}
+
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   } else if (!createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time) {
@@ -136,9 +133,8 @@ async function adminHandler(interaction) {
   if (interaction.customId === "disband_party") {
     try {
       createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
-    } catch (e) {
-      //log(e.stack, "ERROR") Dont log here just supress error
-    }
+    } catch (e) {}
+
     await interaction.message.thread.delete();
     return await interaction.message.delete();
   }

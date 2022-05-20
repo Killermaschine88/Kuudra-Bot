@@ -25,7 +25,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: command?.ephemeral ? true : false });
         command.execute(interaction);
       } catch (e) {
-        log(e.stack, "ERROR", interaction);
+        log({ str: e.stack, type: "ERROR", origin: "Interaction Create Event" });
       }
     }
 

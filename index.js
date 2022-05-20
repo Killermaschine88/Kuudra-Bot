@@ -28,15 +28,15 @@ for (const file of eventFiles) {
 
 //Errors that might slip
 process.on("uncaughtException", (error) => {
-  log(error.stack, "ERROR");
+  log({ str: error.stack, type: "ERROR", origin: "Uncaught Exception Handler" });
 });
 process.on("unhandledRejection", (error) => {
-  log(error.stack, "ERROR");
+  log({ str: error.stack, type: "ERROR", origin: "Unhandled Rejection Handler" });
 });
 
 //Server
 const { startAPI } = require("./api/index.js");
-startAPI();
+//startAPI();
 
 //MongoDB
 const MongoClient = require("mongodb").MongoClient;
@@ -60,7 +60,7 @@ function loadCommands(client) {
       const command = require(`./discord/commands/message/${file}`);
       client.messageCommands.set(command.name.toLowerCase(), command);
     }
-    log(`Loaded Message Commands`);
+    log({ str: `Loaded Message Commands`, type: "INFO", origin: "Command Loader" });
   }
 
   if (fs.existsSync(__dirname + "/discord/commands/interaction")) {
@@ -70,6 +70,6 @@ function loadCommands(client) {
       const command = require(`./discord/commands/interaction/${file}`);
       client.slashCommands.set(command.name.toLowerCase(), command);
     }
-    log(`Loaded Interaction Commands`);
+    log({ str: `Loaded Interaction Commands`, type: "INFO", origin: "Command Loader" });
   }
 }

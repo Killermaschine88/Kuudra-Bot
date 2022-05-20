@@ -8,7 +8,7 @@ module.exports = {
         try {
           message.delete();
         } catch (e) {
-          log(e.stack, "ERROR");
+          log({ str: e.stack, type: "ERROR", origin: "Message Create Event" });
         }
       }, 30000);
     }
@@ -31,10 +31,6 @@ module.exports = {
       if (message.author.id !== client.application?.owner?.id) {
         return message.channel.send("Only my developer is allowed to use this");
       }
-    }
-
-    if (process.env.LOGGING) {
-      log(`${command.name} used by ${message.author.tag}`);
     }
 
     await command.execute(message, args, client);
