@@ -15,6 +15,10 @@ client.discordTogether = new DiscordTogether(client);
 loadCommands(client);
 global.dclient = client;
 
+//Some config stuff
+const { developers } = require("./config.json");
+client.developers = developers;
+
 //Assign Mongo Utils
 /*const { findOne } = require("./discord/constants/functions/mongo")
 client.mongo.findOne = findOne*/

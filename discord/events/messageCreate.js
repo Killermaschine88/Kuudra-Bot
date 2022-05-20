@@ -28,7 +28,7 @@ module.exports = {
     if (!command) return;
 
     if (command.devOnly) {
-      if (message.author.id !== client.application?.owner?.id) {
+      if (!client.developers.includes(message.author.id)) {
         return message.channel.send("Only my developer is allowed to use this");
       }
     }

@@ -8,8 +8,6 @@ module.exports = {
   devOnly: true,
   alias: ["ev", "e"],
   async execute(message, args, client) {
-    if (message.author.id !== client.application?.owner.id) return;
-
     if (args.length === 0) {
       return message.channel.send({ embeds: [errEmbed("No args provided!")] });
     }
@@ -26,11 +24,6 @@ module.exports = {
         await message.channel.send({
           content: messageContent.length > 2000 ? "Output too long to send, attached it" : messageContent,
           files: messageContent.length > 2000 ? [new Discord.MessageAttachment(Buffer.from("//Input\n" + input + "\n\n//Output\n" + formattedResult), "result.js")] : [],
-        });
-        return;
-
-        return message.channel.send({
-          content: `**Input**\`\`\`js\n${message.content}\n\`\`\`\n**Output**\n\`\`\`js\n${JSON.stringify(evaled, null, 4)}\n\`\`\``,
         });
       } catch (err) {
         return message.channel.send({ embeds: [errEmbed(err.stack)] });
