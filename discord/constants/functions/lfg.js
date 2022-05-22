@@ -117,11 +117,15 @@ async function partyLeaderHandler(interaction) {
       createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
     } catch (e) {}
 
-    await interaction.message.thread.delete();
-    return await interaction.message.delete();
+    try {
+      await interaction.message.thread.delete();
+      return await interaction.message.delete();
+    } catch (e) {}
   } else if (!createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time) {
-    await interaction.message.thread.delete();
-    return await interaction.message.delete();
+    try {
+      await interaction.message.thread.delete();
+      return await interaction.message.delete();
+    } catch (e) {}
   } else {
     return await interaction.followUp({ content: "You just recently created this party and it can't be closed immediately.", ephemeral: true });
   }
@@ -135,8 +139,10 @@ async function adminHandler(interaction) {
       createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
     } catch (e) {}
 
-    await interaction.message.thread.delete();
-    return await interaction.message.delete();
+    try {
+      await interaction.message.thread.delete();
+      return await interaction.message.delete();
+    } catch (e) {}
   }
 }
 
@@ -157,7 +163,9 @@ async function joinHandler(interaction) {
       termarchers++;
     }
 
-    await interaction.message.delete();
+    try {
+      await interaction.message.delete();
+    } catch (e) {}
 
     const members = getPartyMembers(embed);
     if (members > 4) {
@@ -178,7 +186,9 @@ async function joinHandler(interaction) {
     return msg.edit({ embeds: [embed] });
   } else {
     const user = interaction.message.embeds[0].description.split("-")[0].trim();
-    await interaction.message.delete();
+    try {
+      await interaction.message.delete();
+    } catch (e) {}
     return await interaction.channel.send(`${user} your join request was denied.`);
   }
 }
