@@ -29,7 +29,7 @@ function start() {
       message += `\`\`\`js\n${str}\n\`\`\``;
 
       //Sending message
-      dclient.channels.cache.get("973575587400675328").send(message);
+      dclient.channels.cache.get(dclient.config.log.console).send(message);
     }
   };
 }

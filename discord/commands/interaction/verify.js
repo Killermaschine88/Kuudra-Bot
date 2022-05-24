@@ -35,7 +35,7 @@ module.exports = {
     if (res.discord === interaction.user.tag) {
       try {
         await interaction.member.setNickname(res.name, "Verified");
-        await interaction.member.roles.add("972059917240385566");
+        await interaction.member.roles.add(interaction.config.roles.verified);
       } catch (e) {} //Ignore Error
 
       await updateDB(interaction, res.name, res.uuid);
@@ -45,17 +45,17 @@ module.exports = {
       if (profile.api) {
         if (profile.hasHyperion) {
           try {
-            interaction.member.roles.add("971832680796815460", "Hyperion detected when verifying");
+            interaction.member.roles.add(interaction.config.roles.hyperion, "Hyperion detected when verifying");
           } catch (e) {} //Ignore Error
         }
         if (profile.hasTerminator) {
           try {
-            interaction.member.roles.add("971832711876583474", "Terminator detected when verifying");
+            interaction.member.roles.add(interaction.config.roles.terminator, "Terminator detected when verifying");
           } catch (e) {} //Ignore Error
         }
       }
 
-      interaction.client.channels.cache.get("973232556919119942").send({ embeds: [sucEmbed(`<@${interaction.user.id}> - \`${interaction.user.tag}\` [${interaction.user.id}] verified as \`${res.name}\``)] });
+      interaction.client.channels.cache.get(interaction.config.log.verify).send({ embeds: [sucEmbed(`<@${interaction.user.id}> - \`${interaction.user.tag}\` [${interaction.user.id}] verified as \`${res.name}\``)] });
       await interaction.editReply({ embeds: [sucEmbed(`Verified as \`${res.name}\``)] });
     } else {
       await interaction.editReply({ embeds: [errEmbed(`Couldn't verify you as \`${res.name}\`\nAccount linked to: \`${res.discord}\`\nYour Account: \`${interaction.user.tag}\``)] });

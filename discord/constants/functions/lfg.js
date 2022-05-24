@@ -39,10 +39,10 @@ async function createParty(interaction) {
     ]),
   ];
 
-  interaction.client.channels.cache.get("974016539911139348").send(`<@!${interaction.user.id}> - ${interaction.user.id} created a ${getTier(interaction.channel.id)} party.`);
+  interaction.client.channels.cache.get(interaction.client.config.log.party).send(`<@!${interaction.user.id}> - ${interaction.user.id} created a ${getTier(interaction)} party.`);
 
   return {
-    content: interaction.member.roles.cache.has("976567057262977084") ? null : getPingRole(interaction.channel), //If User has Ping Bypass Role dont ping users
+    content: interaction.member.roles.cache.has(interaction.client.config.roles.pingBypass) ? null : getPingRole(interaction), //If User has Ping Bypass Role dont ping users
     embeds: [embed],
     components: rows,
   };
@@ -55,7 +55,7 @@ function isPartyLeader(interaction, msg) {
 }
 
 function isAdmin(interaction) {
-  return interaction.member.roles.cache.has("971668152914182164") || interaction.member.roles.cache.has("971668500584202280") ? true : false;
+  return interaction.member.permissions.has("ADMINISTRATOR") ? true : false;
 }
 
 async function memberHandler(interaction) {
@@ -112,20 +112,20 @@ async function memberHandler(interaction) {
 
 async function partyLeaderHandler(interaction) {
   if (!isPartyLeader(interaction) && !isAdmin(interaction)) return await interaction.followUp({ content: "You are not this parties leader.", ephemeral: true });
-  if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time < Date.now()) {
+  if (["run_started", "run_cancelled"].includes(interaction.customId) && createdCache[interaction.user.tag]?.[getTier(interaction)]?.time < Date.now()) {
     try {
-      createdCache[interaction.user.tag][getTier(interaction.channel.id)].created = false;
-    } catch (e) {}
+      createdCache[interaction.user.tag][getTier(interaction)].created = false;
+    } catch (e) {} // Ignore Error
 
     try {
       await interaction.message.thread.delete();
       return await interaction.message.delete();
-    } catch (e) {}
-  } else if (!createdCache[interaction.user.tag]?.[getTier(interaction.channel.id)]?.time) {
+    } catch (e) {} // Ignore Error
+  } else if (!createdCache[interaction.user.tag]?.[getTier(interaction)]?.time) {
     try {
       await interaction.message.thread.delete();
       return await interaction.message.delete();
-    } catch (e) {}
+    } catch (e) {} // Ignore Error
   } else {
     return await interaction.followUp({ content: "You just recently created this party and it can't be closed immediately.", ephemeral: true });
   }
@@ -136,13 +136,13 @@ async function adminHandler(interaction) {
 
   if (interaction.customId === "disband_party") {
     try {
-      createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction.channel.id)].created = false;
-    } catch (e) {}
+      createdCache[interaction.message.embeds[0].title.split("'")[0].trim()][getTier(interaction)].created = false;
+    } catch (e) {} // Ignore Error
 
     try {
       await interaction.message.thread.delete();
       return await interaction.message.delete();
-    } catch (e) {}
+    } catch (e) {} // Ignore Error
   }
 }
 
@@ -225,9 +225,9 @@ function inParty(interaction) {
   return false;
 }
 
-function getPingRole(channel) {
-  if (channel.id === "971680589168123916") return "<@&972027217120993320>";
-  if (channel.id === "971681273015828490") return "<@&972027239581487174>";
+function getPingRole(interaction) {
+  if (interaction.channel.id === interaction.client.channel.t1) return `<@&${interaction.client.config.pingRole.t1}>`;
+  if (interaction.channel.id === interaction.client.channel.t2) return `<@&${interaction.client.config.pingRole.t2}>`;
 }
 
 function requirementCheck(interaction) {
@@ -239,25 +239,25 @@ function requirementCheck(interaction) {
 
   if (rows[2].components[1].style === "SUCCESS") {
     //Hyperion Enjoyer
-    return { allowed: interaction.member.roles.cache.has("971832680796815460") ? true : false, role: "<@&971832680796815460" };
+    return { allowed: interaction.member.roles.cache.has(interaction.client.roles.hyperion) ? true : false, role: `<@&${interaction.client.roles.hyperion}>` };
   }
   if (rows[2].components[2].style === "SUCCESS") {
     //Terminator Enjoyer
-    return { allowed: interaction.member.roles.cache.has("971832711876583474") ? true : false, role: "<@&971832711876583474" };
+    return { allowed: interaction.member.roles.cache.has(interaction.client.roles.terminator) ? true : false, role: `<@&${interaction.client.config.terminator}>` };
   }
   if (rows[2].components[3].style === "SUCCESS") {
     //Kuudra Slayer +
-    return { allowed: interaction.member.roles.cache.has("971677430685237310") ? true : false, role: "<@&971677430685237310" };
+    return { allowed: interaction.member.roles.cache.has(interaction.client.roles.kuudraSlayer1) ? true : false, role: `<@&${interaction.client.roles.kuudraSlayer1}>` };
   }
   if (rows[2].components[4].style === "SUCCESS") {
     //Kuudra Slayer ++
-    return { allowed: interaction.member.roles.cache.has("971677499018870814") ? true : false, role: "<@&971677499018870814" };
+    return { allowed: interaction.member.roles.cache.has(interaction.client.roles.kuudraSlayer2) ? true : false, role: `<@&${interaction.client.roles.kuudraSlayer2}>` };
   }
 }
 
-function getTier(id) {
-  if (id === "971680589168123916") return "T1";
-  if (id === "971681273015828490") return "T2";
+function getTier(interaction) {
+  if (interaction.channel.id === interaction.client.config.channel.t1) return "T1";
+  if (interaction.channel.id === interaction.client.config.channel.t2) return "T2";
 }
 
 module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck, getTier };
