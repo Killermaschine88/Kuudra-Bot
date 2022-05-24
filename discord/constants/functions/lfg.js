@@ -258,6 +258,9 @@ function requirementCheck(interaction) {
 function getTier(interaction) {
   if (interaction.channel.id === interaction.client.config.channel.t1) return "T1";
   if (interaction.channel.id === interaction.client.config.channel.t2) return "T2";
+  if (interaction.channel.id === interaction.client.config.channel.t2) return "T3";
+  if (interaction.channel.id === interaction.client.config.channel.t2) return "T4";
+  if (interaction.channel.id === interaction.client.config.channel.t2) return "T5";
 }
 
 module.exports = { createParty, isPartyLeader, partyLeaderHandler, adminHandler, memberHandler, hasHyperion, hasTerminator, joinHandler, getPartyMembers, getPingRole, requirementCheck, getTier };

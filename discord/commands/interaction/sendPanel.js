@@ -11,7 +11,7 @@ module.exports = {
 
     if (channel.parent.id !== "971677727310614558") return interaction.editReply("Invalid Channel");
 
-    const name = getPanelName(interaction);
+    const name = getPanelName(channel.id);
 
     const embed = new Discord.MessageEmbed().setTitle(`${name} Kuudra`).setDescription(`Click the "Create Group" button on this embed to start a Group.`);
 
@@ -22,7 +22,10 @@ module.exports = {
   },
 };
 
-function getPanelName(interaction) {
-  if (interaction.channel.id === "971680589168123916") return interaction.config.pingRole.t1;
-  if (interaction.channel.id === "971681273015828490") return interaction.config.pingRole.t2;
+function getPanelName(id) {
+  if (id === "971680589168123916") return "T1";
+  if (id === "971681273015828490") return "T2";
+  if (id === "978617983100416020") return "T3";
+  if (id === "978618002431954964") return "T4";
+  if (id === "978618036238037032") return "T5";
 }

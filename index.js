@@ -16,8 +16,7 @@ loadCommands(client);
 global.dclient = client;
 
 //Some config stuff
-const config = require("./config.json");
-client.config = config;
+client.config = require("./config.json");;
 
 //Assign Mongo Utils
 /*const { findOne } = require("./discord/constants/functions/mongo")

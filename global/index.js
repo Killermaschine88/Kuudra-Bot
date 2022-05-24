@@ -2,7 +2,7 @@ const color = require("colorette");
 let ready = false;
 
 function start() {
-  global.log = function ({ str, type = "INFO", origin = "Unknown", info }) {
+  global.log = function ({ str, type = "INFO", origin = "Unknown", data }) {
     if (str === "Ready") {
       ready = true;
     }
@@ -16,15 +16,6 @@ function start() {
       // Base message
       let message = `<t:${Math.floor(Date.now() / 1000)}> [${type}] at **${origin}**\n`;
 
-      //If info exists
-      if (info) {
-        if (info.user) {
-          message += `User: ${info.user}\n`;
-        }
-        if (info.channel) {
-          message += `Channel: ${info.channel}\n`;
-        }
-      }
       //Error message
       message += `\`\`\`js\n${str}\n\`\`\``;
 
