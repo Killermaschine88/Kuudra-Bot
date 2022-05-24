@@ -47,7 +47,7 @@ const { startAPI } = require("./api/index.js");
 //startAPI();
 
 //MongoDB
-const MongoClient = require("mongodb").MongoClient;
+const { MongoClient } = require("mongodb");
 client.mongo = new MongoClient(process.env.URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
