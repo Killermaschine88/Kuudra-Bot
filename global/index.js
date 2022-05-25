@@ -19,10 +19,10 @@ function start() {
       //If info exists
       if (data) {
         if (data.user) {
-          message += `User: <@${data.user.id}> [${data.user.tag}]`;
+          message += `User: <@${data.user.id}> [${data.user.tag}]\n`;
         }
         if (data.commandExecute || !data.commandExecute) {
-          message += `Command: ${data.commandExecute ? data.commandExecute : data.customId}`;
+          message += `Command: ${data.commandExecute ? data.commandExecute : data.customId}\n`;
         }
       }
       //Error message
