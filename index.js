@@ -14,6 +14,7 @@ client.discordTogether = new DiscordTogether(client);
 
 loadCommands(client);
 global.dclient = client;
+global.lastInteraction = null;
 
 //Some config stuff
 client.config = require("./config.json");
