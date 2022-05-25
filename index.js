@@ -16,7 +16,7 @@ loadCommands(client);
 global.dclient = client;
 
 //Some config stuff
-client.config = require("./config.json");;
+client.config = require("./config.json");
 
 //Assign Mongo Utils
 /*const { findOne } = require("./discord/constants/functions/mongo")
@@ -35,10 +35,10 @@ for (const file of eventFiles) {
 
 //Errors that might slip
 process.on("uncaughtException", (error) => {
-  log({ str: error.stack, type: "ERROR", origin: "Uncaught Exception Handler" });
+  log({ str: error.stack, type: "ERROR", origin: "Uncaught Exception Handler", data: lastInteraction });
 });
 process.on("unhandledRejection", (error) => {
-  log({ str: error.stack, type: "ERROR", origin: "Unhandled Rejection Handler" });
+  log({ str: error.stack, type: "ERROR", origin: "Unhandled Rejection Handler", data: lastInteraction });
 });
 
 //Server

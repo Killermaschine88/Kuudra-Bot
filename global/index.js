@@ -16,6 +16,15 @@ function start() {
       // Base message
       let message = `<t:${Math.floor(Date.now() / 1000)}> [${type}] at **${origin}**\n`;
 
+      //If info exists
+      if (data) {
+        if (data.user) {
+          message += `User: <@${data.user.id}> [${data.user.tag}]`;
+        }
+        if (data.commandExecute || !data.commandExecute) {
+          message += `Command: ${data.commandExecute ? data.commandExecute : data.customId}`;
+        }
+      }
       //Error message
       message += `\`\`\`js\n${str}\n\`\`\``;
 

@@ -226,8 +226,8 @@ function inParty(interaction) {
 }
 
 function getPingRole(interaction) {
-  if (interaction.channel.id === interaction.client.channel.t1) return `<@&${interaction.client.config.pingRole.t1}>`;
-  if (interaction.channel.id === interaction.client.channel.t2) return `<@&${interaction.client.config.pingRole.t2}>`;
+  if (interaction.channel.id === interaction.client.config.channel.t1) return `<@&${interaction.client.config.pingRole.t1}>`;
+  if (interaction.channel.id === interaction.client.config.channel.t2) return `<@&${interaction.client.config.pingRole.t2}>`;
 }
 
 function requirementCheck(interaction) {

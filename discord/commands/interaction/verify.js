@@ -73,7 +73,7 @@ async function getData(ign, interaction) {
   }
   try {
     const res = (await axios.get(`https://api.hypixel.net/player?key=${process.env.API_KEY}&uuid=${uuid}`))?.data;
-    if (res.success) {
+    if (res.success && res?.cause !== "Invalid API key") {
       name = res.player?.displayname || "None";
       discord = res.player.socialMedia?.links?.DISCORD || "None";
     } else {

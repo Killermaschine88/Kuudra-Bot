@@ -7,6 +7,8 @@ global.createdCache = {};
 module.exports = {
   name: "interactionCreate",
   async execute(interaction) {
+    global.lastInteraction = interaction;
+
     //Slash Commands
     if (interaction.isCommand()) {
       let commandExecute = interaction.commandName;
@@ -16,6 +18,7 @@ module.exports = {
       }
 
       const command = interaction.client.slashCommands.get(commandExecute);
+      interaction.commandExecute = commandExecute;
 
       if (command.devOnly && interaction.user.id !== interaction.client.application?.owner?.id) {
         return await interaction.reply("This command is Dev only.");
@@ -25,7 +28,7 @@ module.exports = {
         await interaction.deferReply({ ephemeral: command?.ephemeral ? true : false });
         command.execute(interaction);
       } catch (e) {
-        log({ str: e.stack, type: "ERROR", origin: "Interaction Create Event" });
+        log({ str: e.stack, type: "ERROR", origin: "Interaction Create Event", data: interaction });
       }
     }
 
