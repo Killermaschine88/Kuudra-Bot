@@ -5,7 +5,7 @@ module.exports = {
   name: "sendPanel",
   devOnly: false,
   async execute(interaction) {
-    if (!interaction.member.permission.has("ADMINISTRATOR")) return interaction.editReply("Disallowed");
+    if (!interaction.member.permissions.has("ADMINISTRATOR")) return interaction.editReply("Disallowed");
 
     const channel = interaction.options.getChannel("channel");
 
